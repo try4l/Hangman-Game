@@ -10,9 +10,9 @@
   guessTotal: 9,
   guessesLeft: this.guessTotal,  
   gamesToPlay: 3,
-  gamesLeft: this.gamesLeft,
+  gamesLeft: this.gamesToPlay,
   wins: 0,
-  loses: 0,
+  losses: 0,
   endOfGame: false,
   endOfSeries: false,
   
@@ -25,9 +25,13 @@
     // Here's a sample function for initializing your game object.  Are there tasks you want to run when the game first starts up?
     // Get ready for new series of games
     console.log("Initializing the Game");
-    this.reset();    
+    this.reset();
+    this.gamesToPlay = 3;
+    this.gamesLeft = this.gamesToPlay;    
     this.wins = 0;
-    this.loses = 0;
+    this.losses = 0;
+    this.endOfGame = false;
+    this.endOfSeries = false;
     console.log("computerLetter: " + this.theLetter);
   },
 
@@ -40,7 +44,7 @@
     this.guessArray = [];
     this.guessTotal = 9;
     this.guessesLeft = this.guessTotal;
-    endOfGame = false;
+    this.endOfGame = false;
   },
 
   processGuess: function(guess) {
@@ -53,12 +57,16 @@
     if (this.userGuess===this.theLetter) {
       this.endOfGame = true;
       this.wins++;
+
       alert("You WIN!");
+      this.updateGame();
     }
     else if (this.guessesLeft=== 0) {
       this.endOfGame = true;
       this.losses++;
+
       alert("Sorry - you are out of guesses.");
+      this.updateGame();
     }
    
     console.log(this);
@@ -66,9 +74,14 @@
 
   updateGame: function() {
     console.log("Updating the game logic.");
-    if (gamesToPlay--===0) {
-      alert("Games Finished");
+    this.gamesLeft--;
+    if (this.gamesLeft==0) {
+      this.endOfSeries = true;
+      this.initialize();
+      alert("Games Finished\nPress any key to start again.");
     }
+    this.reset();    
+    console.log(this.gamesLeft);
     console.log(this);
   },
 
@@ -88,6 +101,25 @@
   }
 
   // What other functions does your game have?  What else does your game need to 'do'?
+};
+
+var updateGameDisplay = function (game) {
+    var data;
+
+    data = game.gamesLeft;
+    document.getElementById("games-left").innerHTML = "Games Left to Play: " + data;
+
+    data = game.wins;
+    document.getElementById("wins").innerHTML = "Wins: " + data;
+
+    data = game.losses;
+    document.getElementById("losses").innerHTML = "Losses: " + data;
+
+    data = game.guessesLeft;
+    document.getElementById("guesses-left").innerHTML = "Guesses Left: " + data;
+
+    data = game.guessArray;
+    document.getElementById("guesses").innerHTML = "Your Guesses So Far: " + data;
 };
 
 // Outside of our game object... our code is loading so let's initialize our game.
@@ -137,5 +169,5 @@ document.onkeyup = function(event) {
   //game.updateGameLogic(event.key);
 
   // Call some function (not on your game object) to update your page elements.  These elements should be updated from properties of your game object
-  //updateGameDisplay(); //refresh display
+  updateGameDisplay(game); //refresh display
 };
