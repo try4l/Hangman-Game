@@ -1,20 +1,34 @@
   var userText = document.getElementById("user-text"); // hook userText js variable up to user-text html
 
+   var countries = {
+    c0: ["argentina", "_ _ _ _ _ _ _ _ _ ", "./assets/images/argentina.gif"],
+    c1: ["antarctica", "_ _ _ _ _ _ _ _ _ _ ", "./assets/images/antarctica.gif"],
+    c2: ["france", "_ _ _ _ _ _ ", "./assets/images/france.gif"],
+    c3: ["italy", "_ _ _ _ _ ", "./assets/images/italy.gif"],
+    c4: ["spain", "_ _ _ _ _ ", "./assets/images/spain.gif"]
+  };
+
+  var countriesArray = [countries.c0, countries.c1, countries.c2, countries.c3, countries.c4];
+
   var game = {
   // --
   // Define the properties of your game here, I've defined the first one for you
   // --
-  theLetter: null,
+  
+  theCountry: null,
+  countryIndex: 0,
   userGuess: null,
-  guessArray: [],
-  guessTotal: 9,
-  guessesLeft: this.guessTotal,  
+  wordArray: [],
+  guessTotal: 14,
+  guessesLeft: this.guessTotal,
+  guesses: [],  
   gamesToPlay: 3,
   gamesLeft: this.gamesToPlay,
   wins: 0,
   losses: 0,
   endOfGame: false,
   endOfSeries: false,
+  theFlag: "./assets/images/aland_islands.gif",
   
 
   // --
@@ -32,17 +46,17 @@
     this.losses = 0;
     this.endOfGame = false;
     this.endOfSeries = false;
-    console.log("computerLetter: " + this.theLetter);
   },
 
   reset: function() {
-    // Reset the current game - pick a new letter and reset the user-related guessing parameters
+    // Reset the current game - pick a new country and reset the user-related guessing parameters
     // Here's a sample function for resetting your game.  Are there tasks you want to perform after the user wins/loses?
     console.log("Resetting the Game Properties");
-    this.pickLetter();    
+    this.pickCountry();    
     this.userGuess = null;
-    this.guessArray = [];
-    this.guessTotal = 9;
+    this.wordArray = countriesArray[this.countryIndex][1];
+    this.guesses = [];
+    this.guessTotal = 14;
     this.guessesLeft = this.guessTotal;
     this.endOfGame = false;
   },
@@ -51,10 +65,12 @@
     // take user guess and add it to the guessArray, decrement guessesLeft, check for end of game
     //var guess;
     this.userGuess = guess;
-    this.guessArray.push(guess);
+    this.guesses.push(" " + guess);
+    this.updateWordArray(guess);
+    //this.updateGuessArray();
     this.guessesLeft--;
 
-    if (this.userGuess===this.theLetter) {
+    if (this.userGuess===this.theCountry) {
       this.endOfGame = true;
       this.wins++;
 
@@ -72,10 +88,31 @@
     console.log(this);
   },
 
+  costructGuessArray: function () {
+
+  },
+    
+  updateGuessArray: function () {
+
+  },
+
+  updateWordArray: function (guess) {
+    // clone immutable string
+    var temp = this.wordArray.split('');
+    // replace underbar with current letter where letters match    
+    for ( i=0; i<countriesArray[this.countryIndex][0].length; i++) {
+      if (this.userGuess===countriesArray[this.countryIndex][0][i]) {
+        // replace underbar
+        temp[i*2] = guess; 
+      };
+    };
+    this.wordArray = temp.join('');
+  },
+
   updateGame: function() {
     console.log("Updating the game logic.");
     this.gamesLeft--;
-    if (this.gamesLeft==0) {
+    if (this.gamesLeft===0) {
       this.endOfSeries = true;
       this.initialize();
       alert("Games Finished\nPress any key to start again.");
@@ -89,15 +126,16 @@
     console.log(this);
   },
 
-  pickLetter: function() {
-    // Computer picks a letter between 'a' and 'z'
-    console.log("Picking a letter");
-    var letterA = 'a';
-    //console.log("letterA: " + letterA.charCodeAt(0));
-    var randomOffset = Math.floor(Math.random() * 26);
-    //console.log("randomOffset: " + randomOffset.toString());
-    this.theLetter = String.fromCharCode(letterA.charCodeAt(0) + randomOffset);    
-    console.log("theLetter: " + this.theLetter);
+  pickCountry: function() {
+    // Computer picks a country at random from the countries array
+    console.log("Picking a country");
+    var index = Math.floor(Math.random() * countriesArray.length);
+    this.countryIndex = index;
+    console.log(countriesArray.length);
+    console.log("index: " + index);
+    this.theCountry = countriesArray[index][0];    
+    console.log("theCountry: " + this.theCountry);
+    this.theFlag = countriesArray[index][2];
   }
 
   // What other functions does your game have?  What else does your game need to 'do'?
@@ -107,26 +145,32 @@ var updateGameDisplay = function (game) {
     var data;
 
     data = game.gamesLeft;
-    document.getElementById("games-left").innerHTML = "Games Left to Play: " + data;
+    document.getElementById("games-left").innerHTML = data;
 
     data = game.wins;
-    document.getElementById("wins").innerHTML = "Wins: " + data;
+    document.getElementById("wins").innerHTML = data;
 
     data = game.losses;
-    document.getElementById("losses").innerHTML = "Losses: " + data;
+    document.getElementById("losses").innerHTML = data;
+
+    data = game.wordArray;
+    document.getElementById("word-array").innerHTML = data;
 
     data = game.guessesLeft;
-    document.getElementById("guesses-left").innerHTML = "Guesses Left: " + data;
+    document.getElementById("guesses-left").innerHTML = data;
 
-    data = game.guessArray;
-    document.getElementById("guesses").innerHTML = "Your Guesses So Far: " + data;
+    data = game.guesses;
+    document.getElementById("guesses").innerHTML = data;
+
+    data = game.theFlag;
+    document.getElementById("flag").src = data;
 };
 
 // Outside of our game object... our code is loading so let's initialize our game.
 game.initialize();
 
 function bodyLoad() {
-  //alert("Body Load");
+  updateGameDisplay(game);
 };
 
 
@@ -141,7 +185,7 @@ document.onkeyup = function(event) {
   
     // Write some test code to dispatch game object functions for debug
     case("1"):
-      game.pickLetter();
+      game.pickCountry();
       break;     
     case("2"):
       game.initialize();
@@ -157,6 +201,9 @@ document.onkeyup = function(event) {
       break;    
     case("6"):
       game.showData(event.key);
+      break;
+    case("7"):
+      game.updateWordArray(event.key);
       break;
 
     default:

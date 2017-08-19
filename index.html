@@ -2,25 +2,38 @@
 <html>
 <head>
 	<title id="game-title">Hangman Game</title>
+	<link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 </head>
 <body onload="bodyLoad()">
-<h1 id="game-header">The Psychic Game</h1>
-<h2 id="rules">Guess which letter I am thinking of...</h2>
-<br>
-<h3 id = "games-left">Games Left to Play: </h3>
-<br>
-<h3 id="wins">Wins: </h3>
-<br>
-<h3 id="losses">Losses: </h3>
-<br>
-<h3 id="guesses-left">Guesses Left: </h3>
-<br>
-<h3 id="guesses">Your Guesses So Far: </h3>
 
-<h2>You just typed <span id="user-text">...Nothing</span></h2>
+<div id=right-panel>
+	<h1 id="game-header">The Hangman Game</h1>
+	<h2 id="rules">Press any key to get started</h2>
+	<br>
+	<h3 class="label">Games Left to Play: </h3>
+	<h3 id = "games-left"></h3>
+	<h3 class="label">Wins: </h3>
+	<h3 id="wins"></h3>
+	<h3 class="label">Losses: </h3>
+	<h3 id="losses"></h3>
+	<br>
+	<h3 class="label">Current Word:</h3>
+	<h3 id="word-array">_ _ _ _ _</h3>
+	<br>
+	<h3 class="label">Guesses Left: </h3>
+	<h3 id="guesses-left"></h3>
+	<br>
+	<h3 class="label">Letters Already Guessed: </h3>
+	<h3 id="guesses"></h3>
+	<h3>You just typed <span id="user-text">...Nothing</span></h3>
+</div>
 
+<div id="left-panel">
+	<img id="flag" src="./assets/images/aland_islands.gif" alt="flag">
+</div>
 
-<script type="text/javascript" src="assets/javascript/game.js"></script>
+<script type="text/javascript" src="./assets/javascript/game.js"></script>
 
 </body>
 </html>
