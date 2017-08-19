@@ -12,9 +12,11 @@ body {
 
 /* general */
 
+.debug, 
 #user-text {
-  /*display: none;*/ /*remove for debug */
+  display: none; /*remove for debug */
 }
+
 
 #left-panel {
   width: 100%;

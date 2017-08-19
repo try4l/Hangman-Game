@@ -19,7 +19,7 @@
   countryIndex: 0,
   userGuess: null,
   wordArray: [],
-  guessTotal: 14,
+  guessTotal: 11,
   guessesLeft: this.guessTotal,
   guesses: [],  
   gamesToPlay: 3,
@@ -56,31 +56,25 @@
     this.userGuess = null;
     this.wordArray = countriesArray[this.countryIndex][1];
     this.guesses = [];
-    this.guessTotal = 14;
+    this.guessTotal = 11;
     this.guessesLeft = this.guessTotal;
     this.endOfGame = false;
   },
 
   processGuess: function(guess) {
     // take user guess and add it to the guessArray, decrement guessesLeft, check for end of game
-    //var guess;
     this.userGuess = guess;
-    this.guesses.push(" " + guess);
     this.updateWordArray(guess);
-    //this.updateGuessArray();
-    this.guessesLeft--;
-
-    if (this.userGuess===this.theCountry) {
+  
+    if (this.checkForWin()===true) {
       this.endOfGame = true;
       this.wins++;
-
       alert("You WIN!");
       this.updateGame();
     }
     else if (this.guessesLeft=== 0) {
       this.endOfGame = true;
       this.losses++;
-
       alert("Sorry - you are out of guesses.");
       this.updateGame();
     }
@@ -88,15 +82,19 @@
     console.log(this);
   },
 
-  costructGuessArray: function () {
-
-  },
-    
-  updateGuessArray: function () {
-
+  updateGuesses: function (guess) {
+    //  find out if letter has been used already
+    for (i=0; i<this.guesses.length; i++) {
+      if ((this.guesses[i])===(" " + guess)) {
+        return;
+      }   
+    }
+    this.guesses.push(" " + guess);
+    this.guessesLeft--;
   },
 
   updateWordArray: function (guess) {
+    var newMatch = false;
     // clone immutable string
     var temp = this.wordArray.split('');
     // replace underbar with current letter where letters match    
@@ -104,9 +102,23 @@
       if (this.userGuess===countriesArray[this.countryIndex][0][i]) {
         // replace underbar
         temp[i*2] = guess; 
-      };
-    };
+        newMatch = true;
+      }
+    }
     this.wordArray = temp.join('');
+    this.checkForWin();
+    if (newMatch!==true) {
+      this.updateGuesses(guess);
+    }
+  },
+
+  checkForWin: function () {
+    for (i=0; i<this.wordArray.length; i++) {
+      if (this.wordArray[i]==='_') {
+        return false;
+      }
+    }
+    return true;
   },
 
   updateGame: function() {
@@ -118,8 +130,6 @@
       alert("Games Finished\nPress any key to start again.");
     }
     this.reset();    
-    console.log(this.gamesLeft);
-    console.log(this);
   },
 
   showData: function() {
@@ -207,7 +217,16 @@ document.onkeyup = function(event) {
       break;
 
     default:
-      game.processGuess(event.key);
+      if ((event.key >= 'a') && (event.key <= 'z')) {
+        game.processGuess(event.key);        
+      }
+      else if ((event.key >= 'A') && (event.key <= 'Z')) {
+        game.processGuess(event.key.toLowerCase());
+      }
+      else {
+        alert ("Please enter a letter between 'a' and 'z'");
+      }
+
       console.log(this);
       break;
   };
